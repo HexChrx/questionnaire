@@ -13,6 +13,12 @@ class Conn{
 
         $this->mysqli = new mysqli($ip, $user, $pwd, $dbname);
 
+        if(mysqli_connect_errno()){
+            echo "Error:".mysqli_connect_error();
+            exit;
+        }
+
+
         $this->mysqli->set_charset("utf8");
 
     }
