@@ -25,24 +25,30 @@ else{
 }
 
 $result->data_seek(0);
-$count = 2;
+$count = 1;
+
+echo '<form action="answerprocess.php" method="post">';
 
 while($row = $result->fetch_assoc()){
 
     if($row['questionid'] == $temp){
 
-        echo '<br>&nbsp;&nbsp'.$row['label'].'. ' . $row['optioncontent'];
+        echo '<br>&nbsp;&nbsp'
+            .'<input type="radio" name="radio'.$count.'" value="'.$row['optionid'].'">'
+            .$row['label'].'. ' . $row['optioncontent'];
 
     } else {
         $temp = $row['questionid'];
-        echo "<br>$count. ".$row['questioncontent'].
-            '<br>&nbsp;&nbsp'.$row['label'].$row['optioncontent'];
         $count += 1;
+        echo "<br>$count. ".$row['questioncontent'].
+            '<br>&nbsp;&nbsp'.'<input type="radio" name="radio'.$count.'" value="'.$row['optionid'].'">'
+            .$row['label'].'. '. $row['optioncontent'];
+
     }
 
 }
-
-echo '</td></tr></table>';
+echo '<input type="hidden" name="count" value="'.$count.'">';
+echo '<br><br><input type="submit" value="提交"/></form></tr></table>';
 
 
 /*
