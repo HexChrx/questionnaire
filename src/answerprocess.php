@@ -20,10 +20,10 @@ for($i = 0; $i < $count; ++$i){
 $answer = ltrim($answer, ',');
 //echo $answer;
 
-$conn = Conn::getInstence();
-$sql = "UPDATE `options` SET count = count + 1 WHERE id IN ($answer)";
+$conn = new Conn();
+$sql = "UPDATE `options` SET count = count + 1 WHERE id IN (?)";
 //echo $sql.'<br>';
-if($conn->mysqli->query($sql)){
+if($conn->setNoResultQuery($sql, array($answer))){
 
     echo '<h2 align="center">提交成功，谢谢</h2>';
 
@@ -32,17 +32,4 @@ if($conn->mysqli->query($sql)){
 }
 
 echo '<br><h6 align="center">3秒后跳到首页</h6>';
-
-//echo $conn->mysqli->affected_rows;
-
-//$stmt =  $conn->mysqli->stmt_init();
-//if($stmt->prepare($sql)){
-//
-//    $stmt->bind_param('s', $answer);
-//    $stmt->execute();
-//    $stmt->bind_result($num);
-//    $stmt->fetch();
-//    $stmt->close();
-//    echo $num;
-//}
 

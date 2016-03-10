@@ -15,25 +15,24 @@
         <tr align="center">
             <td>
                 <?php
-                    $conn = Conn::getInstence();
+                    $conn = new Conn();
                     $sql = "SELECT * FROM roles";
-                    $result = $conn->mysqli->query($sql);
-                    //echo $result->num_rows;
-                    if($row = $result->fetch_assoc()){
+                    $result = $conn->setResultQuery($sql);
+                    if($result != null){
 
                         echo '<input type="radio" name="role" value="'.
-                            $row['id'].'" checked>'.$row['rolename'];
+                            $result[0]['id'].'" checked>'.$result[0]['rolename'];
 
+                    }else{
+                        exit;
                     }
-                    while($row = $result->fetch_assoc()){
+                    for($i = 1; $i < count($result); ++$i){
 
                         echo '<input type="radio" name="role" value="'.
-                            $row['id'].'">'.$row['rolename'];
+                            $result[$i]['id'].'">'.$result[$i]['rolename'];
 
                     }
                 ?>
-
-
             </td>
         </tr>
         <tr>

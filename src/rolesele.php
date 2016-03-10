@@ -7,16 +7,16 @@ require_once 'conn.inc';
 $role = $_POST['role'];
 //echo $role;
 echo '<h2 align="center">请您回答问题</h2>';
-$conn = Conn::getInstence();
-$sql = "SELECT * FROM questionsview WHERE roleid = $role ORDER BY questionid,label";
+$conn = new Conn();
+$sql = "SELECT * FROM questionsview WHERE roleid = ? ORDER BY questionid,label";
 
-$result = $conn->mysqli->query($sql);
+$result = $conn->setResultQuery($sql, array($role));
 $temp = 0;
 echo '<table align = "center" border="0" cellspacing="10" cellpadding="0"><tr><td>';
-if($row = $result->fetch_assoc()){
+if($result != null){
 
-    $temp = $row['questionid'];
-    echo '1. '.$row['questioncontent'];
+    $temp = $result[0]['questionid'];
+    echo '1. '.$result[0]['questioncontent'];
 
 }
 else{
@@ -24,26 +24,24 @@ else{
     exit;
 }
 
-$result->data_seek(0);
 $count = 1;
 
 echo '<form action="answerprocess.php" method="post">';
 
-while($row = $result->fetch_assoc()){
+foreach($result as $value){
 
-    if($row['questionid'] == $temp){
+    if($value['questionid'] == $temp){
 
         echo '<br>&nbsp;&nbsp'
-            .'<input type="radio" name="radio'.$count.'" value="'.$row['optionid'].'">'
-            .$row['label'].'. ' . $row['optioncontent'];
+            .'<input type="radio" name="radio'.$count.'" value="'.$value['optionid'].'">'
+            .$value['label'].'. ' . $value['optioncontent'];
 
     } else {
-        $temp = $row['questionid'];
+        $temp = $value['questionid'];
         $count += 1;
-        echo "<br>$count. ".$row['questioncontent'].
-            '<br>&nbsp;&nbsp'.'<input type="radio" name="radio'.$count.'" value="'.$row['optionid'].'">'
-            .$row['label'].'. '. $row['optioncontent'];
-
+        echo "<br>$count. ".$value['questioncontent'].
+            '<br>&nbsp;&nbsp'.'<input type="radio" name="radio'.$count.'" value="'.$value['optionid'].'">'
+            .$value['label'].'. '. $value['optioncontent'];
     }
 
 }
