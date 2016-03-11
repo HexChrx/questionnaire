@@ -4,8 +4,42 @@ header("content-type:text/html;charset=utf-8");
 
 require_once 'conn.inc';
 
+function getQuestionType($catelog){
+
+    $type = 'radio';
+    switch($catelog){
+        //todo 类型增加时，添加case
+        case 2: $type = 'checkbox';break;
+
+    }
+
+    return $type;
+
+}
+
+function needBracket($catelog){
+
+    $res = '';
+    switch($catelog){
+        //todo 类型增加时，添加case
+        case 2: $res = '[]';break;
+
+    }
+    return $res;
+}
+
 $role = $_POST['role'];
-//echo $role;
+
+if(!isset($role)){
+
+    echo '<h3 align="center">请选择角色</h3><br>'
+        .'<h5 align="center">3秒后跳回首页</h5>';
+
+    header("refresh: 3;url='../index.php'");
+    exit();
+
+}
+
 echo '<h2 align="center">请您回答问题</h2>';
 $conn = new Conn();
 $sql = "SELECT * FROM questionsview WHERE roleid = ? ORDER BY questionid,label";
@@ -28,27 +62,31 @@ $count = 1;
 
 echo '<form action="answerprocess.php" method="post">';
 
+
 foreach($result as $value){
 
     if($value['questionid'] == $temp){
 
+
         echo '<br>&nbsp;&nbsp'
-            .'<input type="radio" name="radio'.$count.'" value="'.$value['optionid'].'">'
+            .'<input type="'.getQuestionType($value['catelog']).'" name="var'
+            .$count.needBracket($value['catelog']).'" value="'.$value['optionid'].'">'
             .$value['label'].'. ' . $value['optioncontent'];
 
     } else {
         $temp = $value['questionid'];
         $count += 1;
+
         echo "<br>$count. ".$value['questioncontent'].
-            '<br>&nbsp;&nbsp'.'<input type="radio" name="radio'.$count.'" value="'.$value['optionid'].'">'
+            '<br>&nbsp;&nbsp'.'<input type="'. getQuestionType($value['catelog'])
+            .'" name="var'.$count.needBracket($value['catelog']).'" value="'.$value['optionid'].'">'
             .$value['label'].'. '. $value['optioncontent'];
     }
 
 }
 echo '<input type="hidden" name="count" value="'.$count.'">';
+echo '<input type="hidden" name="role" value="'.$role.'">';
 echo '<br><br><input type="submit" value="提交"/></form></tr></table>';
-
-
 /*
 $dsn = "mysql:dbname=questionnaire;host=114.215.113.71";
 

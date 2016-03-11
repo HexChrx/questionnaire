@@ -18,6 +18,12 @@ class Conn{
 
     }
 
+    public function getConnectErrno(){
+
+        return $this->mysqli->connect_errno;
+
+    }
+
     public function setResultQuery($query, $param = array()){
 
         $array = null;
@@ -62,7 +68,7 @@ class Conn{
         $stmt = null;
         try{
             $stmt = $this->mysqli->prepare($query);
-            if(count($param) != 0){
+            if($stmt != null && count($param) != 0){
 
                 foreach ($param as $value) {
                     $stmt->bind_param('s',$value);
@@ -107,5 +113,59 @@ class Conn{
         }
         return $validtion;
     }
+
+    function setNoResultMultiQuery($query, $param = array()){
+
+        $validtion = TRUE;
+        if(!$this->mysqli->connect_errno){
+
+            try{
+
+                $stmt = $this->mysqli->prepare($query);
+                if($stmt != null){
+
+                    foreach($param as $v){
+
+                        foreach($v as $value){
+                            $stmt->bind_param('s',$value);
+                        }
+                        $validtion = $validtion && $stmt->execute();
+                    }
+
+                    $stmt->close();
+
+                }
+
+            }catch (Exception $e){
+                $validtion = false;
+            }
+
+        }else{
+            $validtion = false;
+        }
+        return $validtion;
+    }
+
+    public function beginTransaction(){
+
+        $this->mysqli->autocommit(FALSE);
+        //$this->mysqli->begin_transaction(0);
+
+    }
+
+    public function rollback(){
+
+        $this->mysqli->rollback();
+        $this->mysqli->autocommit(TRUE);
+
+    }
+
+    public function commit(){
+
+        $res = $this->mysqli->commit();
+        $this->mysqli->autocommit(true);
+        return $res;
+    }
+
 }
 

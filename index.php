@@ -18,18 +18,16 @@
                     $conn = new Conn();
                     $sql = "SELECT * FROM roles";
                     $result = $conn->setResultQuery($sql);
-                    if($result != null){
+                    if($result == null){
 
-                        echo '<input type="radio" name="role" value="'.
-                            $result[0]['id'].'" checked>'.$result[0]['rolename'];
+                       exit();
 
-                    }else{
-                        exit;
                     }
-                    for($i = 1; $i < count($result); ++$i){
+                    for($i = 0; $i < count($result); ++$i){
 
                         echo '<input type="radio" name="role" value="'.
                             $result[$i]['id'].'">'.$result[$i]['rolename'];
+                        if(($i + 1) % 5 == 0) echo '<br>';
 
                     }
                 ?>

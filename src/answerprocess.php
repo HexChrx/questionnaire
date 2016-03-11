@@ -5,29 +5,57 @@ header("refresh: 3;url='../index.php'");
 require_once 'conn.inc';
 
 $count = $_POST['count'];
-$answer = '';
+$role = $_POST['role'];
+$answer = array();
 
 for($i = 0; $i < $count; ++$i){
 
-    if(!is_null($_POST['radio'.($i + 1)])){
+    if(!is_null($select = $_POST['var'.($i + 1)])){
 
-        $answer .= ','.$_POST['radio'.($i + 1)];
+        $sub = array();
+        if(is_array($select)){
 
+            foreach($select as $value){
+                array_push($sub, $value);
+
+                array_push($answer, $sub);
+                $sub = array();
+            }
+
+        } else {
+            array_push($sub, $select);
+            array_push($answer, $sub);
+        }
     }
 
 }
 
-$answer = ltrim($answer, ',');
+//$answer = ltrim($answer, ',');
+//print_r($answer);
 //echo $answer;
 
 $conn = new Conn();
-$sql = "UPDATE `options` SET count = count + 1 WHERE id IN (?)";
+if($conn->getConnectErrno()){
+    echo "发生错误";
+    exit;
+}
+$conn->beginTransaction();
+$sql1 = "UPDATE `options` SET count = count + 1 WHERE id IN (?)";
+$sql2 = "UPDATE `roles` SET visitcount = visitcount + 1 WHERE id = ? ";
 //echo $sql.'<br>';
-if($conn->setNoResultQuery($sql, array($answer))){
+if($conn->setNoResultMultiQuery($sql1, $answer) &&
+        $conn->setNoResultQuery($sql2, array((string)$role))){
 
-    echo '<h2 align="center">提交成功，谢谢</h2>';
+    if($conn->commit()) {
+        echo '<h2 align="center">提交成功，谢谢</h2>';
+    }else {
+        $conn->rollback();
+        echo '<h2 align="center">提交失败</h2>';
+    }
 
 } else {
+
+    $conn->rollback();
     echo '<h2 align="center">提交失败</h2>';
 }
 
