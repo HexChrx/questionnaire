@@ -62,7 +62,6 @@ class Conn{
         $stmt = null;
         try{
             $stmt = $this->mysqli->prepare($query);
-            $ref = new ReflectionClass('mysqli_stmt');
             if(count($param) != 0){
 
                 foreach ($param as $value) {
