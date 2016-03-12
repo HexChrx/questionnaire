@@ -14,6 +14,7 @@ class Conn{
             $dbname = $config['dbname'];
 
             $this->mysqli = new mysqli($ip, $user, $pwd, $dbname);
+            $this->mysqli->set_charset('utf8');
         }
 
     }
