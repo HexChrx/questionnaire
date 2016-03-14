@@ -20,9 +20,9 @@ function getQuestionType($catelog){
 function needBracket($catelog){
 
     $res = '';
-    switch($catelog){
+    switch(getQuestionType($catelog)){
         //todo 类型增加时，添加case
-        case 2: $res = '[]';break;
+        case 'checkbox': $res = '[]';break;
 
     }
     return $res;

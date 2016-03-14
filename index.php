@@ -7,29 +7,46 @@
 </head>
 <body>
 <?php
-    require_once 'src/conn.inc';
+
+header("content-type:text/html;charset=utf-8");
+require_once 'src/conn.inc';
+
+$conn = new Conn();
+
+$sql = "UPDATE `property` SET count = count + 1"
+    . " WHERE `property`.`property` = 'visit'";
+
+$conn->setNoResultQuery($sql);
+
+$sql = "SELECT count FROM `property` WHERE" .
+    "`property`.`property` = 'visit'";
+
+$result = $conn->setResultQuery($sql);
+$visitNo = $result[0]['count'];
+
 ?>
-<h3 align="center">请选择您的角色</h3>
+<h3 align="center">欢迎您第<?php echo $visitNo ?>位访客，请选择您的角色</h3>
+
 <form name="roleSelect" action="src/rolesele.php" method="post">
     <table cellpadding="0" cellspacing="15" border="0" align="center">
         <tr align="center">
             <td>
                 <?php
-                    $conn = new Conn();
-                    $sql = "SELECT * FROM roles";
-                    $result = $conn->setResultQuery($sql);
-                    if($result == null){
+                $sql = "SELECT * FROM roles";
+                $result = $conn->setResultQuery($sql);
+                if ($result == null) {
 
-                       exit();
+                    exit();
 
-                    }
-                    for($i = 0; $i < count($result); ++$i){
+                }
+                for ($i = 0; $i < count($result); ++$i) {
 
-                        echo '<input type="radio" name="role" value="'.
-                            $result[$i]['id'].'">'.$result[$i]['rolename'];
-                        if(($i + 1) % 5 == 0) echo '<br>';
+                    echo '<input type="radio" name="role" value="' .
+                        $result[$i]['id'] . '">' . $result[$i]['rolename'];
+                    if (($i + 1) % 5 == 0) echo '<br>';
 
-                    }
+                }
+
                 ?>
             </td>
         </tr>
