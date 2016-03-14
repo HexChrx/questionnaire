@@ -2,7 +2,7 @@
 
 header("content-type:text/html;charset=utf-8");
 header("refresh: 3;url='../index.php'");
-require_once 'conn.inc';
+require_once 'conn/conn.inc';
 
 $count = $_POST['count'];
 $role = $_POST['role'];
@@ -16,6 +16,7 @@ for($i = 0; $i < $count; ++$i){
         if(is_array($select)){
 
             foreach($select as $value){
+                array_push($sub,'s');
                 array_push($sub, $value);
 
                 array_push($answer, $sub);
@@ -23,16 +24,13 @@ for($i = 0; $i < $count; ++$i){
             }
 
         } else {
+            array_push($sub,'s');
             array_push($sub, $select);
             array_push($answer, $sub);
         }
     }
 
 }
-
-//$answer = ltrim($answer, ',');
-//print_r($answer);
-//echo $answer;
 
 $conn = new Conn();
 if($conn->getConnectErrno()){
@@ -44,7 +42,7 @@ $sql1 = "UPDATE `options` SET count = count + 1 WHERE id IN (?)";
 $sql2 = "UPDATE `roles` SET visitcount = visitcount + 1 WHERE id = ? ";
 //echo $sql.'<br>';
 if($conn->setNoResultMultiQuery($sql1, $answer) &&
-        $conn->setNoResultQuery($sql2, array((string)$role))){
+        $conn->setNoResultQuery($sql2, array('s', (string)$role))){
 
     if($conn->commit()) {
         echo '<h2 align="center">提交成功，谢谢</h2>';

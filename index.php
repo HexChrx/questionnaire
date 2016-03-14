@@ -9,7 +9,7 @@
 <?php
 
 header("content-type:text/html;charset=utf-8");
-require_once 'src/conn.inc';
+require_once 'src/conn/conn.inc';
 
 $conn = new Conn();
 

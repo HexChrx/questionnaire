@@ -2,7 +2,7 @@
 
 header("content-type:text/html;charset=utf-8");
 
-require_once 'conn.inc';
+require_once 'conn/conn.inc';
 
 function getQuestionType($catelog){
 
@@ -44,7 +44,7 @@ echo '<h2 align="center">请您回答问题</h2>';
 $conn = new Conn();
 $sql = "SELECT * FROM questionsview WHERE roleid = ? ORDER BY questionid,label";
 
-$result = $conn->setResultQuery($sql, array($role));
+$result = $conn->setResultQuery($sql, array('s', $role));
 $temp = 0;
 echo '<table align = "center" border="0" cellspacing="10" cellpadding="0"><tr><td>';
 if($result != null){
