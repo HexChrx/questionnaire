@@ -3,7 +3,7 @@
 class Conn
 {
 
-    public $mysqli;
+    protected $mysqli;
 
     function __construct()
     {
@@ -11,6 +11,7 @@ class Conn
         if ($config = parse_ini_file("dbconfig.ini")) {
 
             $ip = $config['ip'];
+
             $user = $config['user'];
             $pwd = $config['password'];
             $dbname = $config['dbname'];
