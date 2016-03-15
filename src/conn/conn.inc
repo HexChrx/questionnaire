@@ -4,6 +4,8 @@ class Conn
 {
 
     protected $mysqli;
+    protected $stmt;
+    protected $insetId;
 
     function __construct()
     {
@@ -34,22 +36,21 @@ class Conn
 
         $array = null;
         if (!$this->mysqli->connect_errno) {
-            $stmt = $this->setStatment($query, $param);
+            $this->stmt = $this->setStatment($query, $param);
             try {
 
-                if ($stmt != null) {
-
-                    if ($stmt->execute()) {
-                        $stmt->store_result();
+                if ($this->stmt != null) {
+                    if ($this->stmt->execute()) {
+                        $this->stmt->store_result();
                         $variables = array();
                         $data = array();
-                        $meta = $stmt->result_metadata();
+                        $meta = $this->stmt->result_metadata();
                         while ($field = $meta->fetch_field()) {
                             $variables[] = &$data[$field->name];
                         }
-                        call_user_func_array(array($stmt, 'bind_result'), $variables);
+                        call_user_func_array(array($this->stmt, 'bind_result'), $variables);
                         $i = 0;
-                        while ($stmt->fetch()) {
+                        while ($this->stmt->fetch()) {
 
                             $array[$i] = array();
                             foreach ($data as $k => $v) {
@@ -57,7 +58,7 @@ class Conn
                             }
                             ++$i;
                         }
-                        $stmt->close();
+                        $this->stmt->close();
                     }
 
                 }
@@ -84,7 +85,6 @@ class Conn
     private function setStatment($query, $param)
     {
 
-        $stmt = null;
         try {
             $stmt = $this->mysqli->prepare($query);
             if ($stmt != null && count($param) != 0) {
@@ -102,6 +102,17 @@ class Conn
         return $stmt;
     }
 
+    function getInsertId(){
+
+        if(isset($this->insetId)){
+
+            return $this->insetId;
+
+        }
+        return false;
+
+    }
+
     function setNoResultQuery($query, $param = array())
     {
 
@@ -110,12 +121,12 @@ class Conn
 
             try {
 
-                $stmt = $this->setStatment($query, $param);
-                if ($stmt != null) {
+                $this->stmt = $this->setStatment($query, $param);
+                if ($this->stmt != null) {
 
-                    if ($stmt->execute()) {
-
-                        $stmt->close();
+                    if ($this->stmt->execute()) {
+                        $this->insetId = $this->stmt->insert_id;
+                        $this->stmt->close();
                         $validtion = true;
 
                     }
@@ -127,6 +138,7 @@ class Conn
             }
 
         }
+
         return $validtion;
     }
 
@@ -138,18 +150,17 @@ class Conn
 
             try {
 
-                $stmt = $this->mysqli->prepare($query);
-                if ($stmt != null) {
-
+                $this->stmt = $this->mysqli->prepare($query);
+                if ($this->stmt != null) {
                     foreach ($param as $v) {
 
-                        call_user_func_array(array($stmt, "bind_param"),
+                        call_user_func_array(array($this->stmt, "bind_param"),
                             $this->refValues($v));
 
-                        $validtion = $validtion && $stmt->execute();
+                        $validtion = $validtion && $this->stmt->execute();
                     }
 
-                    $stmt->close();
+                    $this->stmt->close();
 
                 }
 

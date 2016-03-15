@@ -34,13 +34,14 @@ $result = $conn->setResultQuery($sql, $param);
 if(count($result) == 0){
 
     echo '用户名或密码错误,3秒后跳到登录页';
-    //header("refresh: 3;url='index.php'");
+    header("refresh: 3;url='index.php'");
     exit();
 
 }
 
 session_start();
 $_SESSION['username'] = $username;
+$_SESSION['uid'] = $result[0]['id'];
 $_SESSION['roleid'] = $result[0]['roleid'];
 
 switch($result[0]['roleid']){
