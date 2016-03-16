@@ -26,7 +26,8 @@ function getCatelog($catelog)
 
 $con = new Conn();
 
-$sql = "SELECT
+$sql = <<<TAG
+SELECT
 	questionid,
 	questioncontent,
 	catelog,
@@ -44,7 +45,8 @@ FROM
 			rolename,
 			group_concat(
 				label,
-				optioncontent
+				optioncontent,
+				concat(':',count)
 			ORDER BY
 				label
 			) AS `options`
@@ -55,7 +57,8 @@ FROM
 			questionid,
 			roleid
 	) a
-GROUP BY questionid ";
+GROUP BY questionid
+TAG;
 
 //echo $sql;
 
@@ -84,11 +87,14 @@ $result = $con->setResultQuery($sql, array('i', $_SESSION['uid']));
         foreach ($result as $item) {
 
             $i++;
-            echo "<tr><td>$i</td><td>$item[questioncontent]</td><td>" .
-                getCatelog($item['catelog']) . "</td><td>$item[options]</td>
-                    <td>" . $item['rolename'] . "</td>
-                   <td><a href='questiondele.php?id=" . $item['questionid'] . "'>删除</a>
-                    </td></tr>";
+            echo "<tr><td align='center'>$i</td><td>$item[questioncontent]</td>".
+                    "<td align='center'>" .getCatelog($item['catelog']) . "</td>".
+                    "<td>$item[options]</td>".
+                    "<td>" . $item['rolename'] . "</td>".
+                    "<td><a href='delequestion.php?id=" . $item['questionid'] . "'".
+                        " onclick=\"return confirm('删除后无法恢复,确定要删除吗')\">删除</a>".
+                     "</td>".
+                 "</tr>";
         }
     }
     ?>

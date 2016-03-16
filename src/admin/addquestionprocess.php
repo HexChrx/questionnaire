@@ -6,10 +6,10 @@
  * Time: 19:01
  */
 header("content-type:text/html;charset=utf-8");
-echo $_POST['questioncontent'].'<br>';
+//echo $_POST['questioncontent'].'<br>';
 $oc = $_POST['optioncount'].'<br>';
 
-echo $_POST['catelog'];
+//echo $_POST['catelog'];
 print_r($_POST['roleid']);
 
 require_once '../conn/conn.inc';
@@ -17,9 +17,9 @@ session_start();
 $conn = new Conn();
 $conn->beginTransaction();
 $sql = "INSERT INTO questions(content,uid,catelog,addtime) VALUES (?,?,?,?)";
-$d =  date('Y-m-d H:i:s',time());
+$date =  date('Y-m-d H:i:s',time());
 $param = array('ssss',$_POST['questioncontent'],
-                $_SESSION['uid'],$_POST['catelog'],$d);
+                $_SESSION['uid'],$_POST['catelog'],$date);
 $qid = 0;
 print_r($param);
 $validation = true;
@@ -58,20 +58,21 @@ for($i = 1;$i <= (int)$oc; ++$i){
     array_push($sub, chr(ord('A')+$i - 1));
     array_push($sub, $_POST["option$i"]);
     array_push($sub, $qid);
-    array_push($sub, $d);
+    array_push($sub, $date);
 
     array_push($param, $sub);
 }
 
-print_r($param);
+//print_r($param);
 
 $validation = $validation && $conn->setNoResultMultiQuery($sql, $param);
 
 if($validation && $conn->commit()){
     echo "插入成功";
-    header("refresh: 3;url='propositional.php'");
+    header("refresh: 0;url='propositional.php'");
 
 }else{
     $conn->rollback();
-    echo '失败，回滚';
+    echo '失败，回滚，3秒后返回添加页';
+    header("refresh: 3;url='propositional.php'");
 }
