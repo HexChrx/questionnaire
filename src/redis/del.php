@@ -12,4 +12,4 @@ $uid = $_GET['uid'];
 
 $redis->del("user:$uid");
 
-header("header:list.php");
+header("location:list.php");
