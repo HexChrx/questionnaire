@@ -21,6 +21,7 @@ function getCatelog($catelog)
             return "多选题";
 
     }
+    return '';
 
 }
 
