@@ -9,7 +9,7 @@
 
 require_once 'redis.php';
 
-for($i = 1; $i < $redis->get("userid")); ++$i){
+for($i = 1; $i < $redis->get("userid"); ++$i){
 
     $data[] = $redis->hGetAll("user:$i");
 
