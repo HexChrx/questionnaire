@@ -30,7 +30,7 @@ foreach($data as $item) {
     echo "<tr><td>" . $item['uid'] . "</td>".
         "<td>".$item['name']."</td>".
         "<td>".$item['age']."</td>".
-        "<td><a href='del.php?id=".$item['uid'].">删除</a></td></tr>";
+        "<td><a href='del.php?id=".$item['uid']."'>删除</a></td></tr>";
 }
 ?>
 </table>
