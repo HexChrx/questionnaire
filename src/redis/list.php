@@ -10,15 +10,16 @@
 require_once 'redis.php';
 header("content-type:text/html;charset=utf-8");
 
-for($i = 1; $i < $redis->get("userid"); ++$i){
+for($i = 1; $i <= $redis->get("userid"); ++$i){
 
     $data[] = $redis->hGetAll("user:$i");
 
 }
 
 $data = array_filter($data);
+
 ?>
-<table cellspacing="5" cellpadding="0" border="1" align="center">
+<table cellspacing="0" cellpadding="5" border="1" align="center">
 
     <caption>用户信息</caption>
     <tr><th>uid</th><th>name</th><th>age</th><th>操作</th></tr>
