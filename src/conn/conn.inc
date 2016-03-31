@@ -84,7 +84,7 @@ class Conn
 
     private function setStatment($query, $param)
     {
-
+            $stmt = null;
         try {
             $stmt = $this->mysqli->prepare($query);
             if ($stmt != null && count($param) != 0) {

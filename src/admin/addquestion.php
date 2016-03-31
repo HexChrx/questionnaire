@@ -72,8 +72,8 @@
         <tr>
             <td>
                 <?php
-                header("content-type:text/html;charset=utf-8");
-                    foreach($question as $value){
+                
+                    foreach($result as $value){
 
                         echo '<label><input type="checkbox" name="roleid[]" value="'
                             .$value['id'].'">'.$value['rolename'].'</label>';
